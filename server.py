@@ -1,8 +1,10 @@
 import socket
 import threading
 import time 
+import PokemonObjects5
+import alexPokemon
 # Test # Test 2
-class Chatroom:
+class Server:
     def __init__(self, host='localhost', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):
         self.host = host
         self.port = port
@@ -12,6 +14,7 @@ class Chatroom:
         self.minutes = minutes # For time display
         self.seconds= seconds # For time display
         self.done = done # To stop the server (for while loops)
+        self.clients_lock = threading.Lock()
     
     # Purpose: To update the live chat time
     def time_update(self):
@@ -52,8 +55,8 @@ class Chatroom:
                 break
         
 
-    # Purpose: To start the server 
-    def start(self):
+    # Purpose: To start the chatroom 
+    def start_chatroom(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Initializing server socket
 
         server.bind((self.host, self.port)) # Binding the server to localhoost and a valid port number 
@@ -72,7 +75,10 @@ class Chatroom:
 
             nickname = client.recv(1024).decode() # Extracting the nickname the client sent 
             self.nicknames.append(nickname) # Appending the nickname to the list of nicknames
-            self.clients.append(client) # Appending the client socket to the list of clients
+            # Making it so only one thread can add clients to the list at a time (prevent duplicate clients)
+            with self.clients_lock:
+                if client not in self.clients:
+                    self.clients.append(client) # Appending the client socket to the list of clients
 
             print(f"Nickname of the client is {nickname}")
             
@@ -83,10 +89,18 @@ class Chatroom:
 
             handler = threading.Thread(target=self.handle_client, args=(client,)) 
             handler.start() # Starting the client handler
+    
+    def start_game_loop(self):
+        while not self.done:
+            with self.clients_lock:
+                pass # wip
 
 
 if __name__ == "__main__":
-    chat = Chatroom()
+    server = Server()
+    chat = threading.Thread(target=server.start_chatroom)
     chat.start()
+
+    
 
 
