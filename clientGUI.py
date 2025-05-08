@@ -7,8 +7,7 @@ from tkinter import scrolledtext #
 window = tk.Tk()
 window.geometry("350x520")
 window.title("Chat Room")
-photoICON = tk.PhotoImage(file='chatICON.png')
-window.iconphoto(False, photoICON)
+window.iconphoto(False, tk.PhotoImage(file='chatICON.png'))
 
 class ClientChatroom:
     def __init__(self, host='localhost', port=65000, done=False):

@@ -1198,9 +1198,9 @@ def run_all_tests():
     test_apply_end_turn_status_damage()
     print("All tests passed.")
 
-if __name__ == "__main__":
-    #run_all_tests()
-    main()  
+# if __name__ == "__main__":
+#     #run_all_tests()
+#     main()  
 
 
 
