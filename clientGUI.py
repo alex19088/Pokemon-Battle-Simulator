@@ -1,106 +1,117 @@
 import socket
 import threading
-import os
-import tkinter as tk #
-from tkinter import scrolledtext #
-
-window = tk.Tk()
-window.geometry("350x520")
-window.title("Chat Room")
-window.iconphoto(False, tk.PhotoImage(file='chatICON.png'))
+import tkinter as tk
+from tkinter import scrolledtext
 
 class ClientChatroom:
-    def __init__(self, host='localhost', port=65000, done=False):
+    def __init__(self, host='localhost', port=65000):
         self.host = host
         self.port = port
-        self.done = done
-        self.nickname_colors = {}  # Dictionary to store nickname-color mapping
+        self.client = None
+        self.nickname_colors = {}
+        self.nickname = ""
 
-    # assign unique color to trainer
     def assign_color(self, nickname):
-        colors = ["green", "blue", "red"]  # Add more colors if needed
+        colors = ["green", "blue", "red", "purple", "orange"]
         if nickname not in self.nickname_colors:
             self.nickname_colors[nickname] = colors[len(self.nickname_colors) % len(colors)]
         return self.nickname_colors[nickname]
 
-    # Purpose: To recieve messages from the server
-    def receive(self, client):
-        while not self.done:
+    def receive(self):
+        while True:
             try:
-                message = client.recv(1024).decode() # Receiving messages
-                if message == "NICK": 
-                    client.send(nickname.encode()) # Send the clients chosen nickname to the server
+                message = self.client.recv(1024).decode()
+                if message == "NICK":
+                    self.client.send(self.nickname.encode())
                 else:
-                    # Extract nickname and message
-                    sender, msg = message.split(": ", 1)
-                    color = self.assign_color(sender)
+                   
+                    if ": " in message:
+                        sender, msg = message.split(": ", 1)
+                        color = self.assign_color(sender)
 
-                    # Display the message with the sender's color
-                    chat_display.config(state=tk.NORMAL)
-                    chat_display.tag_config(sender, foreground=color, font=("Arial", 10, "bold"))
-                    chat_display.insert(tk.END, f"{sender}: ", sender)
-                    chat_display.insert(tk.END, f"{msg}\n")
-                    chat_display.config(state=tk.DISABLED)
-                    chat_display.see(tk.END)
-            except: 
-                print("An error occured")
-                client.close()
+                        chat_display.config(state=tk.NORMAL)
+                        chat_display.tag_config(sender, foreground=color, font=("Arial", 10, "bold"))
+                        chat_display.insert(tk.END, f"{sender}: ", sender)
+                        chat_display.insert(tk.END, f"{msg}\n")
+                        chat_display.config(state=tk.DISABLED)
+                        chat_display.see(tk.END)
+                    else:
+                        # System message
+                        chat_display.config(state=tk.NORMAL)
+                        chat_display.insert(tk.END, message + "\n")
+                        chat_display.config(state=tk.DISABLED)
+                        chat_display.see(tk.END)
+
+            except Exception as e:
+                print("Error receiving:", e)
+                self.client.close()
                 break
 
-    # Purpose: To send messages to the server
-    def write_message(self, client):
-        user_input = input_field.get().strip()  # Get user input and remove extra spaces
-
-        if user_input:  # Only proceed if the input is not empty
-            # Send the message to the server
-            message = f"{nickname}: {user_input}"
-            client.send(message.encode())
-
-            # Display the users message in their color
+    def write_message(self, event=None):
+        user_input = input_field.get().strip()
+        if user_input:
+            message = f"{self.nickname}: {user_input}"
+            try:
+                self.client.send(message.encode())
+            except:
+                print("Error sending message")
+            # Display it locally
             chat_display.config(state=tk.NORMAL)
-            color = self.assign_color(nickname)
-            chat_display.tag_config(nickname, foreground=color, font=("Arial", 10, "bold"))
-            chat_display.insert(tk.END, f"You: ", nickname)
+            color = self.assign_color(self.nickname)
+            chat_display.tag_config(self.nickname, foreground=color, font=("Arial", 10, "bold"))
+            chat_display.insert(tk.END, f"You: ", self.nickname)
             chat_display.insert(tk.END, f"{user_input}\n")
             chat_display.config(state=tk.DISABLED)
             chat_display.see(tk.END)
-
-            # Clear the input field
             input_field.delete(0, tk.END)
 
-    # Purpose: To start the client connection to the server
-    def start(self):
-        client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect((self.host, self.port))
+    def start(self, nickname):
+        self.nickname = nickname
+        self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client.connect((self.host, self.port))
 
-        recv_thread = threading.Thread(target=self.receive, args=(client,))
+        recv_thread = threading.Thread(target=self.receive, daemon=True)
         recv_thread.start()
 
-        write_thread = threading.Thread(target=self.write_message, args=(client,))
-        write_thread.start()
+# --- GUI Setup ---
+window = tk.Tk()
+window.geometry("350x520")
+window.title("Chat Room")
+
+# Optional: custom icon
+try:
+    photoICON = tk.PhotoImage(file='chatICON.png')
+    window.iconphoto(False, photoICON)
+except:
+    pass
+
+chat_display = scrolledtext.ScrolledText(window, wrap=tk.WORD, width=50, height=20, state=tk.DISABLED)
+chat_display.pack(padx=10, pady=10)
+
+label = tk.Label(window, text="Enter your nickname and press Enter:", font=('Arial', 10))
+label.pack()
+
+input_field = tk.Entry(window, width=50)
+input_field.pack(padx=10, pady=10)
+
+chat = ClientChatroom()
 
 def handle_nickname(event):
-    global nickname
-    nickname = input_field.get()
-    input_field.delete(0, tk.END)
-    label.config(text="Type and press 'Enter' to chat!")
-    input_field.bind("<Return>", lambda event: ClientChatroom.send_message())
+    nickname = input_field.get().strip()
+    if nickname:
+        input_field.delete(0, tk.END)
+        label.config(text="Type and press Enter to chat!")
+        input_field.unbind("<Return>")
+        input_field.bind("<Return>", chat.write_message)
+        chat.start(nickname)
 
-if __name__ == "__main__":
+input_field.bind("<Return>", handle_nickname)
 
-    chat_display = scrolledtext.ScrolledText(window, wrap=tk.WORD, width=50, height=20, state=tk.DISABLED)
-    chat_display.pack(padx=10, pady=10)
-
-    label = tk.Label(window, text="Type and press 'Enter' to chat!", font=('Arial', 10), fg='Black')
-    label.pack()
-
-    input_field = tk.Entry(window, width= 50)
-    input_field.pack(padx=(10,0), pady=(10,0))
-    input_field.bind("<Return>", handle_nickname)
-
-    label2 = tk.Label(window, image= tk.PhotoImage(file='pikachu2.png'))
+# Optional image (ensure file exists)
+try:
+    label2 = tk.Label(window, image=tk.PhotoImage(file='pikachu2.png'))
     label2.pack()
+except:
+    pass
 
-
-    chat = ClientChatroom()
-    chat.start()
+window.mainloop()
