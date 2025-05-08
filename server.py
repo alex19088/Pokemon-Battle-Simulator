@@ -91,10 +91,10 @@ class Server:
         
         self.broadcast("All players connected! Starting game...")
 
-        for i in range(3):
-            for client in self.clients:
-                
-                client.send("CHOOSEPOKEMON".encode())
+        #for i in range(3):
+           # for client in self.clients:
+
+              #  client.send("CHOOSEPOKEMON".encode())
 
             
 
@@ -102,18 +102,18 @@ class Server:
 
             #with self.clients_lock:
                 #pass # wip
-    def start_battle(self):
-        # trainer pokemon choosing
-        for i in range(3):
-            for client in self.clients:
-                print("\nAvailable Pokemon: ")
-                for i in range(len(all_pokemon)):
-                    if not all_pokemon[i].is_chosen:
-                        print(f"{i + 1}: {all_pokemon[i].name}")
-                choose_pokemon(trainer, all_pokemon)
+    # def start_battle(self):
+    #     # trainer pokemon choosing
+    #     for i in range(3):
+    #         for client in self.clients:
+    #             print("\nAvailable Pokemon: ")
+    #             for i in range(len(all_pokemon)):
+    #                 if not all_pokemon[i].is_chosen:
+    #                     print(f"{i + 1}: {all_pokemon[i].name}")
+    #             choose_pokemon(trainer, all_pokemon)
 
-        for trainer in listof_trainer:             
-            set_initial_active_pokemon(trainer)
+        # for trainer in listof_trainer:             
+        #     set_initial_active_pokemon(trainer)
 
 
 if __name__ == "__main__":

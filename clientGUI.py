@@ -7,7 +7,6 @@ from tkinter import scrolledtext #
 window = tk.Tk()
 window.geometry("350x520")
 window.title("Chat Room")
-photo1 = tk.PhotoImage(file='pikachu2.png')
 photoICON = tk.PhotoImage(file='chatICON.png')
 window.iconphoto(False, photoICON)
 
@@ -100,7 +99,7 @@ if __name__ == "__main__":
     input_field.pack(padx=(10,0), pady=(10,0))
     input_field.bind("<Return>", handle_nickname)
 
-    label2 = tk.Label(window, image = photo1)
+    label2 = tk.Label(window, image= tk.PhotoImage(file='pikachu2.png'))
     label2.pack()
 
 
