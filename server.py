@@ -55,51 +55,80 @@ class Server:
                 break
         
 
-    # Purpose: To start the chatroom 
-    def start_chatroom(self):
+    # To start the game server for clients
+    def start_game(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM) # Initializing server socket
 
-        server.bind((self.host, self.port)) # Binding the server to localhoost and a valid port number 
+        server.bind((self.host, self.port)) # Binding the server to localhost and a valid port number 
 
         server.listen(3) # Listening for 3 players 
 
         # Live timer
-        timer = threading.Thread(target=self.time_update)
+        
+        timer = threading.Thread(target=self.time_update, daemon=True)
         timer.start()
 
-        # Constantly accepting client connections
-        while not self.done:
+        # Accept connections until 3 players have joined, and starting the chatroom
+        while not len(self.clients) == 3:
             client, addr = server.accept()
-
             client.send("NICK".encode()) # To notify clients to enter a nickname when joining the chat
 
             nickname = client.recv(1024).decode() # Extracting the nickname the client sent 
             self.nicknames.append(nickname) # Appending the nickname to the list of nicknames
+
+            print(f"Nickname of the client is {nickname}")
+
             # Making it so only one thread can add clients to the list at a time (prevent duplicate clients)
             with self.clients_lock:
                 if client not in self.clients:
                     self.clients.append(client) # Appending the client socket to the list of clients
 
-            print(f"Nickname of the client is {nickname}")
-            
-            client.send("Welcome to the Chatroom! Please refrain from any toxicity.\n".encode()) # Notifying the client that they connected to the server
-
-            self.broadcast(f"{nickname} joined the chat!") # Notifying other clients that a new client joined the chat
-            
-
+            self.broadcast(f"{nickname} joined the game!") # Notifying other clients that a new client joined the chat
+            client.send(f"Welcome to alexPokemon! Waiting for {3 - len(self.clients)} more player(s)!".encode())
+            client.send("Welcome to the Chatroom! Please refrain from any toxicity.\n".encode())
             handler = threading.Thread(target=self.handle_client, args=(client,)) 
             handler.start() # Starting the client handler
-    
-    def start_game_loop(self):
-        while not self.done:
-            with self.clients_lock:
-                pass # wip
+        
+        self.broadcast("All players connected! Starting game...")
+
+        for i in range(3):
+            for client in self.clients:
+                
+                client.send("CHOOSEPOKEMON".encode())
+
+            
+
+                
+
+            #with self.clients_lock:
+                #pass # wip
+    def start_battle(self):
+        # trainer pokemon choosing
+        for i in range(3):
+            for client in self.clients:
+                print("\nAvailable Pokemon: ")
+                for i in range(len(all_pokemon)):
+                    if not all_pokemon[i].is_chosen:
+                        print(f"{i + 1}: {all_pokemon[i].name}")
+                choose_pokemon(trainer, all_pokemon)
+
+        for trainer in listof_trainer:             
+            set_initial_active_pokemon(trainer)
 
 
 if __name__ == "__main__":
+    all_pokemon: list[alexPokemon.Pokemon] = [PokemonObjects5.charizard, PokemonObjects5.ampharos, PokemonObjects5.swampert,
+                                  PokemonObjects5.metagross, PokemonObjects5.abomasnow, PokemonObjects5.dusknoir,
+                                  PokemonObjects5.pangoro, PokemonObjects5.naganadel, PokemonObjects5.gardevoir,
+                                  PokemonObjects5.gengar, PokemonObjects5.rayquaza, PokemonObjects5.grimmsnarl,
+                                  PokemonObjects5.garchomp, PokemonObjects5.delphox, PokemonObjects5.duskmanenecrozma,
+                                  PokemonObjects5.ironbundle, PokemonObjects5.diancie, PokemonObjects5.guzzlord, 
+                                  PokemonObjects5.drowsee, PokemonObjects5.kyurem, PokemonObjects5.torracat, 
+                                  PokemonObjects5.mudsdale, PokemonObjects5.vikavolt, PokemonObjects5.snorlax  ]
     server = Server()
-    chat = threading.Thread(target=server.start_chatroom)
-    chat.start()
+    game = threading.Thread(target=server.start_game)
+    game.start()
+    
 
     
 
