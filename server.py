@@ -15,7 +15,7 @@ class ClientWrapper:
         
 
 class Server:
-    def __init__(self, host='localhost', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):
+    def __init__(self, host='10.151.172.115', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):
         self.host = host
         self.port = port
         self.clients = clients # The list of clients 

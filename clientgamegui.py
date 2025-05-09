@@ -7,7 +7,7 @@ from tkinter import scrolledtext
 import threading
 import random
 import socket
-
+# GUI For the game screen 
 class ClientGameGUI:
     def __init__(self, root, client_socket):
         self.client_socket = client_socket

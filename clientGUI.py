@@ -8,7 +8,7 @@ from clientgamegui import ClientGameGUI
 
 
 class ClientClass:
-    def __init__(self, host='localhost', port=65000):
+    def __init__(self, host='10.151.172.115', port=65000):
         self.host = host
         self.port = port
         self.client = None
@@ -28,10 +28,10 @@ class ClientClass:
                 else:
                     if ": " in message:
                         sender, msg = message.split(": ", 1)
-                        color = self.assign_color(sender)
+                        
 
                         chatwindowDisplay.config(state=tk.NORMAL)
-                        chatwindowDisplay.tag_config(sender, foreground=color, font=("Arial", 10, "bold"))
+                        chatwindowDisplay.tag_config(sender, font=("Arial", 10, "bold"))
                         chatwindowDisplay.insert(tk.END, f"{sender}: ", sender)
                         chatwindowDisplay.insert(tk.END, f"{msg}\n")
                         chatwindowDisplay.config(state=tk.DISABLED)
@@ -66,7 +66,7 @@ class ClientClass:
         recv_thread.start()
 
 class ClientGame:
-    def __init__(self, host='localhost', port=65000):
+    def __init__(self, host='10.151.172.115', port=65000):
         self.host = host
         self.port = port
         self.client = None
@@ -81,43 +81,7 @@ class ClientGame:
         # Start receiving messages from the server in a separate thread
         recv_thread = threading.Thread(target=self.receive_game, daemon=True)
         recv_thread.start()
-'''''
-    # Purpose: receive game-related messages (e.g. Pokémon selection)
-    def receive_game(self):
-        while True:
-            try:
-                message = self.client.recv(1024).decode()
-                if message == "NICK":
-                    self.client.send(self.nickname.encode())
-                elif message.startswith("Available Pokemon:"):
-                    client_game_gui.display_game_message("It's your turn to choose a Pokémon!")
-                    client_game_gui.display_game_message(message)
 
-                    # Keep printing the rest of the list and the confirm prompt
-                    while True:
-                        more = self.client.recv(1024).decode()
-                        client_game_gui.display_game_message(more)
-                        if "Confirm?" in more:
-                            break
-
-                    # Prompt in terminal (you can switch this to GUI later if you want)
-                    choice = input("Choose a Pokémon by number: ").strip()
-                    self.client.send(choice.encode())
-
-                    # Display Pokémon info
-                    poke_info = self.client.recv(1024).decode()
-                    client_game_gui.display_game_message(poke_info)
-
-                    confirm = input("Confirm this choice? (1: Yes, 2: No): ").strip()
-                    self.client.send(confirm.encode())
-
-                else:
-                    client_game_gui.display_game_message(message)
-            except Exception as e:
-                print("Error receiving:", e)
-                self.client.close()
-                break
-'''
 
 # purpose: Let each user pick a nickname and then config the label to accurately update 
 # Let user pick a nickname and create the game window
