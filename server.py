@@ -97,7 +97,7 @@ class Server:
                 client.sendall("This Pokemon is already taken.\n".encode())
                 continue
 
-            client.sendall(str(chosen_pokemon).encode())
+            client.sendall(f"{chosen_pokemon.name}".encode())
             client.sendall(f"\nConfirm? (1: Yes, 2: No):\n".encode())
             confirm = client.recv(1024).decode().strip().lower()
 
