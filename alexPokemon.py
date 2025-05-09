@@ -927,6 +927,7 @@ def determine_winner(trainers: list) -> str:
 # Contract: battle_loop(trainers: list) -> None
 # Purpose: The main game loop that handles the battle between trainers
 def battle_loop(trainers: list) -> None:
+    db = DatabaseManager()  # Create database connection
     while not battle_is_over(trainers):  # While battle isn't over
         for current_trainer in trainers: # Going through each trainer's turn
 
@@ -963,6 +964,16 @@ def battle_loop(trainers: list) -> None:
         list_of_queued_moves.clear()
 
     print(f"\nCongrats to {determine_winner(trainers)} for winning!")  # End game
+    for trainer in trainers:
+        for pokemon in trainer.trainer_pokemon:
+            db.insert_player(
+                trainer.trainer_name,
+                pokemon.name,
+                pokemon.type1.type_name,
+                pokemon.type2.type_name if pokemon.type2 else None
+            )
+
+    db.close()
     return
 
 

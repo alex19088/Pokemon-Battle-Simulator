@@ -2,6 +2,8 @@ import socket
 import threading
 import tkinter as tk
 from tkinter import scrolledtext
+
+from alexPokemon import DatabaseManager
 from clientgamegui import ClientGameGUI
 
 
@@ -11,6 +13,7 @@ class ClientClass:
         self.port = port
         self.client = None
         self.nickname = ""
+        self.db = DatabaseManager()  # database
 
     def receive(self):
         while True:
@@ -49,6 +52,7 @@ class ClientClass:
             message = f"{self.nickname}: {user_input}"
             try:
                 self.client.send(message.encode())
+                self.db.save_chat(self.nickname, user_input) # save to database
             except:
                 print("Error sending message")
             inputChat.delete(0, tk.END)
