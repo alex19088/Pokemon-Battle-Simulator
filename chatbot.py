@@ -38,7 +38,7 @@ class Observer(ABC):
     def update(self, user_input, session_data):
         pass
 
-endFlag = False # i wanted the program to end after escalation so im defining this here and making it a global variable 
+endFlag = False 
 
 # Purpose: to detect negative sentiment in user input and escalate the conversation if necessary
 class SentimentObserver(Observer):
