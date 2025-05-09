@@ -134,8 +134,10 @@ def handle_nickname(event):
         inputChat.bind("<Return>", clientclass.write_message)
         clientclass.start(nickname)
 
+        # Pass the existing socket from ClientClass into the game GUI
         global client_game_gui
-        client_game_gui = ClientGameGUI(chatWindow) # thread here ?
+        client_game_gui = ClientGameGUI(chatWindow, clientclass.client)
+
 
 
 # GUI Setup for chat room
