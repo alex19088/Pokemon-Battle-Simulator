@@ -32,16 +32,17 @@ class Observer(ABC):
     def update(self, user_input: str, session: dict) -> str:
         pass
 
+# Purpose: to observe the sentiment of the user's last message and escalate if needed
 class SentimentObserver(Observer):
     negative_words = ["angry", "frustrated", "hate", "worst", "stupid", "this sucks"]
 
     def update(self, user_input: str, session: dict) -> str:
         if any(w in user_input.lower() for w in self.negative_words):
             session['escalate'] = True
-            return "I sense frustration—I'll connect you with support if needed."
+            return "I sense frustration, Ill connect you with support if needed."
         return None
 
-# Stubbed backend manager (unused for static responses)
+# Backend manager (unused for static responses)
 class backendManager:
     def process_request(self) -> str:
         return ""
@@ -62,30 +63,31 @@ class AttackInfoHandler(IQueryHandler):
 class TypeInfoHandler(IQueryHandler):
     def handle_query(self, user_input, session, qdb, backend) -> str:
         resp = qdb.lookup_response("type_info", user_input)
-        return resp or "I can explain type strengths and weaknesses—try asking 'what is fire strong against?'."
+        return resp or "I can explain type strengths and weaknesses, try asking 'what is fire strong against?'."
 
 # Handler for item-related questions
 class ItemInfoHandler(IQueryHandler):
     def handle_query(self, user_input, session, qdb, backend) -> str:
         resp = qdb.lookup_response("item_info", user_input)
-        return resp or "Need details on Potions, Berries, or other items? Just ask!"
+        return resp or "Need details on potions or full heals? Just ask!"
 
 # Handler for game mechanics questions
 class MechanicHandler(IQueryHandler):
     def handle_query(self, user_input, session, qdb, backend) -> str:
         resp = qdb.lookup_response("mechanics", user_input)
-        return resp or "I can cover mechanics like turn order, status effects, and catching Pokemon."
+        return resp or "I can cover mechanics like turn order or status effects."
 
 # General/fallback handler
 class GeneralHandler(IQueryHandler):
     def handle_query(self, user_input, session, qdb, backend) -> str:
         resp = qdb.lookup_response("general", user_input)
-        return resp or "I'm your Pokemon battle support—ask me anything about attacks, types, items, or mechanics."
+        return resp or "I'm your Pokemon battle support, ask me anything about attacks, types, items, or mechanics."
 
+# default handler if the AI cant recognize what the user wrote 
 class DefaultHandler(IQueryHandler):
     def handle_query(self, user_input, session, qdb, backend) -> str:
         qdb.writeUnrecognized(user_input)
-        return "Sorry, I didn't understand that. Could you rephrase?"
+        return "Sorry, I didntt understand that. Could you rephrase?"
 
 # Factory for mapping intents to handlers
 class QueryManager:
@@ -110,6 +112,7 @@ class Chatbot:
         self.factory = factory
         self.observers = [SentimentObserver()]
 
+    # Purpose: 
     def notify_observers(self, text: str, session: dict) -> str:
         for obs in self.observers:
             res = obs.update(text, session)
@@ -117,6 +120,7 @@ class Chatbot:
                 return res
         return None
 
+    # Setup observer logic 
     def process_input(self, user_input: str, user_id: str) -> str:
         session = self.sessions.setdefault(user_id, {})
         esc = self.notify_observers(user_input, session)
@@ -139,6 +143,7 @@ class intentRecognizer:
             "general": ["hello", "hi", "help", "info", "support"]
         }
 
+    # Purpose: to recognize the intent
     def recognize_intent(self, user_input: str) -> str:
         txt = user_input.lower()
         for intent, words in self.synonyms.items():
@@ -158,7 +163,7 @@ photo1 = tk.PhotoImage(file='pikachu.png')
 
 def send_message():
     msg = input_field.get().strip()
-    chat_display.tag_config("user_tag", foreground="green", font=("Arial",10,"bold"))
+    chat_display.tag_config("user_tag", foreground="green", font=("Arial",10,"bold")) # tags for player and bot, probablt dont need 
     chat_display.tag_config("bot_tag", foreground="blue", font=("Arial",10,"bold"))
     if not msg:
         return
@@ -182,7 +187,7 @@ if __name__ == "__main__":
     label = tk.Label(window, text="Type and press 'Enter' to talk", font=('Arial',10))
     label.pack()
 
-    input_field = tk.Entry(window, width=50)
+    input_field = tk.Entry(window, width=50)   # logic for input field 
     input_field.pack(padx=10, pady=(0,10))
     input_field.bind("<Return>", lambda e: send_message())
 
@@ -190,9 +195,9 @@ if __name__ == "__main__":
     label2.pack()
 
     query_db = Query_Database()
-    intent_recognizer = intentRecognizer(query_db)
+    intent_recognizer = intentRecognizer(query_db)  # logic for intializations
     backend_manager = backendManager()
     handler_factory = QueryManager
     bot = Chatbot(query_db, intent_recognizer, backend_manager, handler_factory)
 
-    window.mainloop()
+    window.mainloop()  # start the chatbot 
