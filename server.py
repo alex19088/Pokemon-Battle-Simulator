@@ -5,12 +5,13 @@ import PokemonObjects5
 import alexPokemon
 # Test # Test 2
 
+# Wrapper class for client objects 
 class ClientWrapper:
     def __init__(self, client, nickname):
-        self.client = client
-        self.nickname = nickname
-        self.trainer_pokemon = []
-        self.active_pokemon = None
+        self.client = client # The socket object
+        self.nickname = nickname # The nickname of the client
+        self.trainer_pokemon = [] # The list of pokemons chosen by the trainer (later on)
+        self.active_pokemon = None # The active pokemon of the trainer (later on)
 
 class Server:
     def __init__(self, host='localhost', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):

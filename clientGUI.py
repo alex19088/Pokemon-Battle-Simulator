@@ -10,14 +10,7 @@ class ClientClass:
         self.host = host
         self.port = port
         self.client = None
-        self.nickname_colors = {}
         self.nickname = ""
-
-    def assign_color(self, nickname):
-        colors = ["green", "blue", "red", "purple", "orange"]
-        if nickname not in self.nickname_colors:
-            self.nickname_colors[nickname] = colors[len(self.nickname_colors) % len(colors)]
-        return self.nickname_colors[nickname]
 
     def receive(self):
         while True:
