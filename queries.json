@@ -1,419 +1,358 @@
 {
-    "orders": [
-      {
-        "Question": "where is my order",
-        "Answer": [
-          "Please enter your order ID to check your order status.",
-          "Can you provide your order ID so I can locate your order?",
-          "I need your order ID to track your order."
-        ],
-        "Follow_Up": [
-          "Would you like to track another order?",
-          "Do you need help with anything else regarding your order?"
-        ]
-      },
-      {
-        "Question": "track my order",
-        "Answer": [
-          "Sure, please provide your order ID for tracking.",
-          "I can help with that; what's your order number?",
-          "To track your order, please enter your order ID."
-        ]
-      },
-      {
-        "Question": "what is the status of my order",
-        "Answer": [
-          "I can check the status for you. Please provide your order ID.",
-          "Let me know your order ID so I can give you an update on your order status."
-        ]
-      },
-      {
-        "Question": "when will my order arrive",
-        "Answer": [
-          "Orders typically arrive within 3-5 business days.",
-          "It should arrive within 3 to 5 days, depending on the shipping method.",
-          "Expect your order to arrive within a few days once it’s shipped."
-        ]
-      },
-      {
-        "Question": "has my order shipped",
-        "Answer": [
-          "I'll check that for you. Can you confirm your order ID?",
-          "Let me verify if your order has been shipped; please provide your order number."
-        ]
-      },
-      {
-        "Question": "is my order on its way",
-        "Answer": [
-          "Please provide your order ID so I can see if your order is on its way.",
-          "I need your order ID to check the shipping status of your order."
-        ]
-      },
-      {
-        "Question": "can you track my order",
-        "Answer": [
-          "Of course, please share your order ID.",
-          "I can track your order; what's the order ID?"
-        ]
-      },
-      {
-        "Question": "order status update",
-        "Answer": [
-          "Sure, I can update you on your order status. Please provide your order ID.",
-          "I need your order ID to fetch the latest update on your order."
-        ]
-      },
-      {
-        "Question": "where can i find my order information",
-        "Answer": [
-          "Your order information is available online. Please provide your order ID for details.",
-          "I can help locate your order details; can you give me your order ID?"
-        ]
-      },
-      {
-        "Question": "i need to know my order status",
-        "Answer": [
-          "I can help with that. Please enter your order ID.",
-          "Let me check the status; what is your order ID?"
-        ]
-      }
-    ],
-    "refunds": [
+  "attack_info": [
     {
-        "Question": "i want a refund",
-        "Answer": [
-        "Sure, I can help with that. Can you tell me why you’re requesting a refund?",
-        "I can assist with the return. Please share the reason for your refund.",
-        "Of course! What seems to be the issue with your order?"
-        ]
+      "Question": "what is a physical attack",
+      "Answer": [
+        "Physical attacks use the Attack stat against the opponent's Defense stat.",
+        "They calculate damage based on physical strength—higher Attack yields more damage."
+      ]
     },
     {
-        "Question": "how do i get a refund",
-        "Answer": [
-        "To get a refund, just provide your order ID and the reason for returning.",
-        "We can start the process now—what item are you looking to refund?",
-        "Please share your order ID and the issue with the item."
-        ]
+      "Question": "what are physical attacks",
+      "Answer": [
+        "Physical attacks use the Attack stat against the opponent's Defense stat.",
+        "They calculate damage based on physical strength—higher Attack yields more damage."
+      ]
     },
     {
-        "Question": "can i return this",
-        "Answer": [
-        "Most items can be returned within 30 days of delivery.",
-        "Yes, returns are accepted on many items. May I ask what you’re returning?",
-        "Sure, do you have the item name or order ID handy?"
-        ]
+      "Question": "what is a special attack",
+      "Answer": [
+        "Special attacks use Special Attack against Special Defense.",
+        "They deal damage based on special power—ideal for moves like Thunderbolt or Flamethrower."
+      ]
     },
     {
-        "Question": "what is your refund policy",
-        "Answer": [
-        "You can return most items within 30 days of delivery, in original condition.",
-        "Our refund policy allows for returns within 30 days of receiving your item.",
-        "As long as it’s unused and in its original packaging, we can issue a refund."
-        ]
+      "Question": "what are special attacks",
+      "Answer": [
+        "Special attacks use Special Attack against Special Defense.",
+        "They deal damage based on special power—ideal for moves like Thunderbolt or Flamethrower."
+      ]
     },
     {
-        "Question": "how long do refunds take",
-        "Answer": [
-        "Refunds are typically processed within 5–7 business days.",
-        "Once approved, it can take up to a week for your refund to reflect.",
-        "You'll receive your refund within 5 to 7 business days after return approval."
-        ]
+      "Question": "difference between physical and special attacks",
+      "Answer": [
+        "Physical moves rely on Attack vs. Defense; special moves rely on Special Attack vs. Special Defense.",
+        "Use physical if your Pokemon has high Attack, special if it has high Special Attack."
+      ]
     },
     {
-        "Question": "is it too late to get a refund",
-        "Answer": [
-        "Returns must be requested within 30 days of delivery.",
-        "It depends—when did you receive the item?",
-        "Possibly not! Can you tell me when your order arrived?"
-        ]
+      "Question": "what are critical hits",
+      "Answer": [
+        "Critical hits ignore defense boosts and deal 1.5× damage.",
+        "They have a small chance to occur and can turn the tide of battle!"
+      ]
     },
     {
-        "Question": "i want to return my item",
-        "Answer": [
-        "Got it! What's the reason for your return?",
-        "Please provide your order ID and the return reason.",
-        "Happy to help—what went wrong with the item?"
-        ]
+      "Question": "what is stab",
+      "Answer": [
+        "STAB (Same-Type Attack Bonus) gives a 1.5× damage multiplier when a Pokemon uses a move matching its own type.",
+        "Example: Charizard using Fire Blast gets a STAB bonus because it's Fire type."
+      ]
     },
     {
-        "Question": "can i return something if i opened it",
-        "Answer": [
-        "Items must be unopened to receive a full refund.",
-        "Opened items may not qualify unless they're defective.",
-        "If it’s been opened but not used, you may still be eligible."
-        ]
-    },
-    {
-        "Question": "will i get a full refund",
-        "Answer": [
-        "Yes, as long as your return is within our policy window.",
-        "Full refunds are issued when returns meet our conditions.",
-        "Absolutely—just make sure it’s returned in its original condition."
-        ]
-    },
-    {
-        "Question": "how do i send my item back",
-        "Answer": [
-        "We’ll send a prepaid return label to your email.",
-        "You'll get a return label after your request is approved.",
-        "Just attach the return label we send and drop it off at any carrier location."
-        ]
+      "Question": "how is damage calculated",
+      "Answer": [
+        "Damage = (((2 × Level / 5 + 2) × Power × (Attack / Defense)) / 50 + 2) × modifiers.",
+        "Modifiers include random factor (0.85–1.0), STAB, type effectiveness, and critical hits."
+      ]
     }
-    ],
-    "inventory": [
-      {
-        "Question": "is the iphone 15 in stock",
-        "Answer": [
-          "Checking inventory for iPhone 15...",
-          "Yes, check our website",
-          "I verified the stock and you can order it online"
-        ]
-      },
-      {
-        "Question": "is the iphone in stock",
-        "Answer": [
-          "Checking inventory for iPhone...",
-          "No the iphone is not in stock",
-          "Yes, the iPhone 15 Pro is currently in stock"
-        ]
-      },
-      {
-        "Question": "do you have the iphone 15 pro available",
-        "Answer": [
-          "Yes, the iPhone 15 Pro is currently in stock.",
-          "The iPhone 15 Pro is available. Would you like more details?"
-        ]
-      },
-      {
-        "Question": "in stock",
-        "Answer": [
-          "Yes, check our website",
-          "Yes, we have many selections for that too",
-          "No, check back tomorrow."
-        ]
-      },
-      {
-        "Question": "is the product available",
-        "Answer": [
-          "Can you specify which product you're asking about?",
-          "I need to know the product name to check availability."
-        ]
-      },
-      {
-        "Question": "what products are in stock",
-        "Answer": [
-          "You can view all available products on our website.",
-          "Our website has the latest inventory details."
-        ]
-      },
-      {
-        "Question": "check product availability",
-        "Answer": [
-          "Sure, please provide the product name or ID.",
-          "I can check that for you. Which product are you interested in?"
-        ]
-      },
-      {
-        "Question": "do you have any deals",
-        "Answer": [
-          "We often run promotions. Please check our Deals section online.",
-          "Yes, we have ongoing promotions."
-        ]
-      },
-      {
-        "Question": "is my desired product available",
-        "Answer": [
-          "Please specify the product name, and I'll check its availability.",
-          "I need the product details to see if it's in stock."
-        ]
-      },
-      {
-        "Question": "availability of product",
-        "Answer": [
-          "Let me check that for you. Please provide the product name.",
-          "I need more details to check product availability."
-        ]
-      },
-      {
-        "Question": "can you check inventory for me",
-        "Answer": [
-          "Sure, which product are you interested in?",
-          "Please provide the product name or ID for inventory details."
-        ]
-      },
-      {
-        "Question": "product stock status",
-        "Answer": [
-          "I can check the stock status for you. Which product?",
-          "Please let me know the product name to check its stock."
-        ]
-      }
-    ],
-    "payment": [
-      {
-        "Question": "why did my payment fail",
-        "Answer": [
-          "Please check with your bank or try another payment method.",
-          "Your card may have been declined. Can you try a different method?",
-          "It seems there was an issue with your payment; please verify your card details."
-        ]
-      },
-      {
-        "Question": "my payment was declined",
-        "Answer": [
-          "I'm sorry to hear that. Please check with your bank or try a different payment method.",
-          "It appears your payment was declined. Could you try another method?",
-          "Please verify your payment details or use an alternative payment method."
-        ]
-      },
-      {
-        "Question": "payment issues",
-        "Answer": [
-          "There seems to be a payment issue. Please ensure your card details are correct.",
-          "Payment problems can occur sometimes. Could you try a different payment option?"
-        ]
-      },
-      {
-        "Question": "i cant complete my payment",
-        "Answer": [
-          "I'm sorry for the inconvenience. Please check your payment method and try again.",
-          "It looks like your payment didn't go through. Could you try another payment option?"
-        ]
-      },
-      {
-        "Question": "what went wrong with my payment",
-        "Answer": [
-          "There might be an issue with your card details. Please contact your bank or try another method.",
-          "I suggest verifying your card information or using a different payment method."
-        ]
-      },
-      {
-        "Question": "problem with my payment",
-        "Answer": [
-          "There seems to be a problem with your payment. Please try another payment method.",
-          "I'm sorry, but there was an issue processing your payment. Could you try again?"
-        ]
-      },
-      {
-        "Question": "payment error",
-        "Answer": [
-          "A payment error occurred. Please double-check your payment information.",
-          "I'm unable to process your payment right now. Please verify your details."
-        ]
-      },
-      {
-        "Question": "unable to process payment",
-        "Answer": [
-          "It appears we cannot process your payment at the moment. Please try again later or use another method.",
-          "There was an error processing your payment. Could you try a different payment method?"
-        ]
-      },
-      {
-        "Question": "failed payment transaction",
-        "Answer": [
-          "Your payment transaction failed. Please verify your card details and try again.",
-          "I'm sorry, but your payment did not go through. Can you try another payment method?"
-        ]
-      },
-      {
-        "Question": "payment did not go through",
-        "Answer": [
-          "It seems your payment did not go through. Please check your payment method or try again.",
-          "Your payment failed to process. Could you try a different payment option?"
-        ]
-      }
-    ],
-    "general": [
-      {
-        "Question": "hello",
-        "Answer": [
-          "Hello! How can I help you today?",
-          "Hi there! What can I do for you?",
-          "Greetings! How may I assist you?"
-        ],
-        "Follow_Up": [
-          "Do you have any questions about your order?",
-          "Is there something I can help you with?"
-        ]
-      },
-      {
-        "Question": "hi",
-        "Answer": [
-          "Hi! How can I assist you today?",
-          "Hello there! What can I do for you?"
-        ],
-        "Follow_Up": [
-          "Need help with something specific?",
-          "How can I help you today?"
-        ]
-      },
-      {
-        "Question": "good morning",
-        "Answer": [
-          "Good morning! How may I assist you today?",
-          "Morning! What can I help you with?"
-        ]
-      },
-      {
-        "Question": "help",
-        "Answer": [
-          "I'm here to help! Please tell me what you need assistance with.",
-          "If your asking about my features, I can help with:\nOrders\nRefunds\nStock Info\nAnd more, just let me know"
-        ],
-        "Follow_Up": [
-          "Are you having trouble with an order or something else?",
-          "What do you need help with?"
-        ]
-      },
-      {
-        "Question": "customer service",
-        "Answer": [
-          "Our customer service team is here to help. What can I assist you with today?",
-          "I can connect you to a support representative if needed."
-        ]
-      },
-      {
-        "Question": "support",
-        "Answer": [
-          "I'm here for support! How can I assist you?",
-          "What do you need help with today?"
-        ]
-      },
-      {
-        "Question": "are you there",
-        "Answer": [
-          "Yes, I'm here! How can I help?",
-          "I'm here to assist you. What do you need?"
-        ]
-      },
-      {
-        "Question": "what can you do",
-        "Answer": [
-          "I can help with order tracking, refunds, product availability, and payment issues. What do you need assistance with?",
-          "I offer support for orders, refunds, inventory, and more. How can I help you today?"
-        ]
-      },
-      {
-        "Question": "i have a question",
-        "Answer": [
-          "Sure, please go ahead and ask your question.",
-          "I'm listening. What's your question?"
-        ]
-      },
-      {
-        "Question": "how do i get help",
-        "Answer": [
-          "You can ask me any question about your order, refunds, or product availability.",
-          "I'm here to help. Please tell me what you need assistance with."
-        ]
-      },
-      {
-        "Question": "how long does shipping take",
-        "Answer": [
-          "Standard shipping takes between 3 and 5 business days",
-          "Shipping usually takes 3-5 business days."
-        ]
-      }
-    ]
-  }
-  
+  ],
+
+  "type_info": [
+    {
+      "Question": "what is normal strong against",
+      "Answer": [
+        "Normal-type moves have no super effective targets, but they hit most types neutrally."
+      ]
+    },
+    {
+      "Question": "which types are immune to normal",
+      "Answer": [
+        "Ghost-type Pokemon are immune to Normal moves—no damage is dealt."
+      ]
+    },
+    {
+      "Question": "what is fire strong against",
+      "Answer": [
+        "Fire-type moves are super effective against Grass, Ice, Bug, and Steel types."
+      ]
+    },
+    {
+      "Question": "which types resist fire",
+      "Answer": [
+        "Fire moves are not very effective against Fire, Water, Rock, and Dragon types."
+      ]
+    },
+    {
+      "Question": "what is water strong against",
+      "Answer": [
+        "Water-type moves are super effective against Fire, Ground, and Rock types."
+      ]
+    },
+    {
+      "Question": "which types resist water",
+      "Answer": [
+        "Water moves are not very effective against Water, Grass, Ice, and Dragon types."
+      ]
+    },
+    {
+      "Question": "what is electric strong against",
+      "Answer": [
+        "Electric-type moves are super effective against Water and Flying types."
+      ]
+    },
+    {
+      "Question": "which types resist electric",
+      "Answer": [
+        "Electric moves are not very effective against Electric, Grass, and Dragon types."
+      ]
+    },
+    {
+      "Question": "what is grass strong against",
+      "Answer": [
+        "Grass-type moves are super effective against Water, Ground, and Rock types."
+      ]
+    },
+    {
+      "Question": "which types resist grass",
+      "Answer": [
+        "Grass moves are not very effective against Fire, Grass, Poison, Flying, Bug, Dragon, and Steel types."
+      ]
+    },
+    {
+      "Question": "what is ice strong against",
+      "Answer": [
+        "Ice-type moves are super effective against Grass, Ground, Flying, and Dragon types."
+      ]
+    },
+    {
+      "Question": "which types resist ice",
+      "Answer": [
+        "Ice moves are not very effective against Water, Ice, Steel, and Fire types."
+      ]
+    },
+    {
+      "Question": "what is fighting strong against",
+      "Answer": [
+        "Fighting-type moves are super effective against Normal, Rock, Steel, Ice, and Dark types."
+      ]
+    },
+    {
+      "Question": "which types resist fighting",
+      "Answer": [
+        "Fighting moves are not very effective against Poison, Flying, Psychic, Bug, and Fairy types."
+      ]
+    },
+    {
+      "Question": "what is poison strong against",
+      "Answer": [
+        "Poison-type moves are super effective against Grass and Fairy types."
+      ]
+    },
+    {
+      "Question": "which types resist poison",
+      "Answer": [
+        "Poison moves are not very effective against Poison, Ground, Rock, and Ghost types, and have no effect on Steel types."
+      ]
+    },
+    {
+      "Question": "what is ground strong against",
+      "Answer": [
+        "Ground-type moves are super effective against Fire, Electric, Poison, Rock, and Steel types."
+      ]
+    },
+    {
+      "Question": "which types resist ground",
+      "Answer": [
+        "Ground moves are not very effective against Bug and Grass types, and have no effect on Flying types."
+      ]
+    },
+    {
+      "Question": "what is flying strong against",
+      "Answer": [
+        "Flying-type moves are super effective against Grass, Fighting, and Bug types."
+      ]
+    },
+    {
+      "Question": "which types resist flying",
+      "Answer": [
+        "Flying moves are not very effective against Electric, Rock, and Steel types."
+      ]
+    },
+    {
+      "Question": "what is psychic strong against",
+      "Answer": [
+        "Psychic-type moves are super effective against Fighting and Poison types."
+      ]
+    },
+    {
+      "Question": "which types resist psychic",
+      "Answer": [
+        "Psychic moves are not very effective against Psychic and Steel types, and have no effect on Dark types."
+      ]
+    },
+    {
+      "Question": "what is bug strong against",
+      "Answer": [
+        "Bug-type moves are super effective against Grass, Psychic, and Dark types."
+      ]
+    },
+    {
+      "Question": "which types resist bug",
+      "Answer": [
+        "Bug moves are not very effective against Fire, Fighting, Poison, Flying, Ghost, Steel, and Fairy types."
+      ]
+    },
+    {
+      "Question": "what is rock strong against",
+      "Answer": [
+        "Rock-type moves are super effective against Fire, Ice, Flying, and Bug types."
+      ]
+    },
+    {
+      "Question": "which types resist rock",
+      "Answer": [
+        "Rock moves are not very effective against Fighting, Ground, and Steel types."
+      ]
+    },
+    {
+      "Question": "what is ghost strong against",
+      "Answer": [
+        "Ghost-type moves are super effective against Psychic and Ghost types."
+      ]
+    },
+    {
+      "Question": "which types resist ghost",
+      "Answer": [
+        "Ghost moves are not very effective against Dark types and have no effect on Normal types."
+      ]
+    },
+    {
+      "Question": "what is dragon strong against",
+      "Answer": [
+        "Dragon-type moves are super effective against Dragon types."
+      ]
+    },
+    {
+      "Question": "which types resist dragon",
+      "Answer": [
+        "Dragon moves are not very effective against Steel types and have no effect on Fairy types."
+      ]
+    },
+    {
+      "Question": "what is dark strong against",
+      "Answer": [
+        "Dark-type moves are super effective against Psychic and Ghost types."
+      ]
+    },
+    {
+      "Question": "which types resist dark",
+      "Answer": [
+        "Dark moves are not very effective against Dark and Fairy types."
+      ]
+    },
+    {
+      "Question": "what is steel strong against",
+      "Answer": [
+        "Steel-type moves are super effective against Ice, Rock, and Fairy types."
+      ]
+    }
+  ],
+
+  "item_info": [
+    {
+      "Question": "what does a potion do",
+      "Answer": [
+        "A Potion restores 20 HP to your active Pokemon."
+      ]
+    },
+    {
+      "Question": "what is a super potion",
+      "Answer": [
+        "A Super Potion restores 50 HP to your active Pokemon."
+      ]
+    },
+    {
+      "Question": "what does an antidote do",
+      "Answer": [
+        "An Antidote cures Poison status on your active Pokemon immediately."
+      ]
+    },
+    {
+      "Question": "how to cure paralysis",
+      "Answer": [
+        "Use a Parlyz Heal or Full Heal item to remove Paralysis from your Pokemon."
+      ]
+    }
+  ],
+
+  "mechanics": [
+    {
+      "Question": "how does turn order work",
+      "Answer": [
+        "Turn order is based on Speed stat—Pokemon with higher Speed act first.",
+        "Moves with higher priority (like Quick Attack) go before slower moves."
+      ]
+    },
+    {
+      "Question": "what are status effects",
+      "Answer": [
+        "Status effects like Burn, Freeze, or Paralysis apply ongoing or conditional penalties.",
+        "Burn reduces HP each turn; Paralysis may prevent action."
+      ]
+    },
+    {
+      "Question": "what is fainting",
+      "Answer": [
+        "A Pokemon faints when its HP reaches zero and can no longer battle.",
+        "You must switch to another Pokemon or end the battle."
+      ]
+    },
+    {
+      "Question": "what is type advantage",
+      "Answer": [
+        "Type advantage occurs when a move is super effective against an opponent's type.",
+        "Use type charts to exploit weaknesses for extra damage."
+      ]
+    }
+  ],
+
+  "general": [
+    {
+      "Question": "hello",
+      "Answer": [
+        "Hello! How can I assist you with your Pokemon battles today?"
+      ]
+    },
+    {
+      "Question": "hi",
+      "Answer": [
+        "Hi there! Ready to answer your questions about moves, types, items, or mechanics."
+      ]
+    },
+    {
+      "Question": "how are you",
+      "Answer": [
+        "I'm doing great, thanks for asking! How can I help with your battle simulator?"
+      ]
+    },
+    {
+      "Question": "how's it going",
+      "Answer": [
+        "All systems operational—ready to support your Pokemon battles. What do you need?"
+      ]
+    },
+    {
+      "Question": "good morning",
+      "Answer": [
+        "Good morning! Want to learn about type matchups or move mechanics today?"
+      ]
+    },
+    {
+      "Question": "good evening",
+      "Answer": [
+        "Good evening! Need battle tips or move explanations? I'm here to help."
+      ]
+    }
+  ]
+}
