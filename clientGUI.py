@@ -8,25 +8,23 @@ from clientgamegui import ClientGameGUI
 
 
 class ClientClass:
-    def __init__(self, host='10.151.172.115', port=65000):
+    def __init__(self, host='localhost', port=65000):
         self.host = host
         self.port = port
         self.client = None
         self.nickname = ""
       
-
+    # Purpose: To receieve tcp messages from the server
     def receive(self):
         while True:
             try:
-                message = self.client.recv(1024).decode()
+                message = self.client.recv(1024).decode() # If the message is NICK, send the server the clients chosen nickname
                 if message == "NICK":
                     self.client.send(self.nickname.encode())
-                elif message == "PICK":
-                    pass
                 elif message.startswith("Available Pokemon:") or "Confirm?" in message or "added to your team!" in message:
-                    client_game_gui.display_game_message(message)
+                    client_game_gui.display_game_message(message) # If the message starts with these phrases, output the message in the game window
                 else:
-                    if ": " in message:
+                    if ": " in message: # If the message contains ":", its a chatroom message
                         sender, msg = message.split(": ", 1)
                         
 
@@ -45,7 +43,7 @@ class ClientClass:
                 print("Error receiving:", e)
                 self.client.close()
                 break
-
+    # Purpose: Allow client to type a message and send it to the server
     def write_message(self, event=None):
         user_input = inputChat.get().strip()
         if user_input:
@@ -57,6 +55,7 @@ class ClientClass:
                 print("Error sending message")
             inputChat.delete(0, tk.END)
 
+    # Purpose: To connect to the server and constantly receive messages
     def start(self, nickname):
         self.nickname = nickname
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -65,8 +64,9 @@ class ClientClass:
         recv_thread = threading.Thread(target=self.receive, daemon=True)
         recv_thread.start()
 
+# For the game loop
 class ClientGame:
-    def __init__(self, host='10.151.172.115', port=65000):
+    def __init__(self, host='localhost', port=65000):
         self.host = host
         self.port = port
         self.client = None
@@ -85,7 +85,6 @@ class ClientGame:
 
 # purpose: Let each user pick a nickname and then config the label to accurately update 
 # Let user pick a nickname and create the game window
-
 def handle_nickname(event):
     nickname = inputChat.get().strip()
     if nickname:
