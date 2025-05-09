@@ -1767,7 +1767,7 @@ class HealingWish(Move):
     \033[1mType:\033[38;5;199m\033[1m {self.type}\033[0m 
     \033[1mCategory:\033[0m {self.category} 
     \033[1mPower:\033[0m {self.power}  \033[1mAccuracy:\033[0m {self.accuracy}
-    \033[1mDescription:\033[0m The user faints and the next Pokémon released is fully healed.
+    \033[1mDescription:\033[0m The user faints and the next Pokemon released is fully healed.
         """
     
     # WIP
