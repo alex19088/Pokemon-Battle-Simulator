@@ -21,7 +21,8 @@ class ClientGameGUI:
 
         self.setup_layout()
         self.start_game_socket_thread()  # <--- Start listening to the server
-
+        
+    # Purpose: To set up the layout of the game window
     def setup_layout(self):
         self.top_left_frame = tk.Frame(self.chatWindow3, width=275, height=260, bg="white")
         self.top_left_frame.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
@@ -61,10 +62,11 @@ class ClientGameGUI:
         self.command_input.pack(padx=5, pady=5)
         self.command_input.bind("<Return>", self.send_command_to_server)
 
+    # Purpose: To start the game connection
     def start_game_socket_thread(self):
         thread = threading.Thread(target=self.receive_message_from_server, daemon=True)
         thread.start()
-
+    # Purpose: To receive messages from the server
     def receive_message_from_server(self):
         while True:
             try:
@@ -75,7 +77,7 @@ class ClientGameGUI:
             except Exception as e:
                 self.display_game_message(f"Error receiving: {e}")
                 break
-
+    # Purpose: To send commands to the server
     def send_command_to_server(self, event=None):
         message = self.command_input.get().strip()
         if message:
@@ -84,7 +86,7 @@ class ClientGameGUI:
             except Exception as e:
                 self.display_game_message(f"Failed to send: {e}")
             self.command_input.delete(0, tk.END)
-
+    # Purpose: To display messages in the game log
     def display_game_message(self, message):
         self.game_log.config(state=tk.NORMAL)
         self.game_log.insert(tk.END, message + "\n")

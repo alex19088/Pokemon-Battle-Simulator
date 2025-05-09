@@ -14,8 +14,8 @@ class ClientWrapper:
         self.active_pokemon = None # The active pokemon of the trainer (later on)
 
 class Server:
-    def __init__(self, host='localhost', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):
-        self.host = host
+    def __init__(self, host='10.151.172.115', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):
+        self.host = host 
         self.port = port
         self.clients = clients # The list of clients 
         self.nicknames = nicknames # Nickname for each client (for chat)
@@ -38,7 +38,8 @@ class Server:
             if self.minutes == 60:
                 self.minutes = 0
                 self.hours += 1
-                
+
+    # Purpose: To broadcast messages to all clients
     def broadcast(self, message):
         time_display = f"{self.hours:02d}:{self.minutes:02d}:{self.seconds:02d}"
         for client_obj in self.clients:
@@ -69,9 +70,10 @@ class Server:
 
 
     
-
+    # Purpose: To choose a pokemon for the trainer
     def choose_pokemon(self, client_obj):
         client = client_obj.client
+        # Show all the pokemon to the trainer
         while True:
             message = "Available Pokemon:\n"
             available = []
@@ -80,28 +82,30 @@ class Server:
                     available.append((idx + 1, poke))
                     message += f"{idx + 1}: {poke.name}\n"
             message += "Choose a Pokemon by number:\n"
-            client.sendall(message.encode())
+            client.sendall(message.encode()) 
 
+            # Receive the clients choice and check if it is valid
             try:
                 response = client.recv(1024).decode().strip()      
                 choice = int(response)
             except:
                 client.sendall("Error receiving input.\n".encode())
                 continue
-
+        
             if choice < 1 or choice > len(all_pokemon):
                 client.sendall("Choice out of range.\n".encode())
                 continue
-
+            
             chosen_pokemon = all_pokemon[choice - 1]
             if chosen_pokemon.is_chosen:
                 client.sendall("This Pokemon is already taken.\n".encode())
                 continue
-
+            # Display the chosen pokemon 
             client.sendall(f"{chosen_pokemon.name}".encode())
             client.sendall(f"\nConfirm? (1: Yes, 2: No):\n".encode())
             confirm = client.recv(1024).decode().strip().lower()
 
+            # If the client confirms, add the pokemon to the clients pokemon list and mark it as chosen
             if confirm in ["1", "yes"]:
                 chosen_pokemon.is_chosen = True
                 client_obj.trainer_pokemon.append(chosen_pokemon)
@@ -113,23 +117,27 @@ class Server:
                 client.sendall("Invalid option. Try again.\n".encode())
 
 
-
+    # Purpose: To start the server and accept clients
     def start_game(self):
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.bind((self.host, self.port))
         server.listen(3)
 
+        # Starting the global timer
         timer = threading.Thread(target=self.time_update, daemon=True)
         timer.start()
-
+        # Establish connection with up to 3 clients, and storing all their info as an object
         while len(self.clients) < 3:
             client, addr = server.accept()
+            # Message that retrieves the nickname of the client
             client.send("NICK".encode())
             nickname = client.recv(1024).decode().strip()
 
+            # Create a new client object
             client_obj = ClientWrapper(client, nickname)
 
             print(f"Nickname of the client is {nickname}")
+            # Prevent duplicate nicknames
             with self.clients_lock:
                 self.clients.append(client_obj)
 
@@ -137,36 +145,17 @@ class Server:
             self.broadcast(f"{nickname} joined the game!")
             client.send(f"Welcome to alexPokemon!\nWaiting for {3 - len(self.clients)} more player(s).\n".encode())
             client.send("Please refrain from any toxicity.\n".encode())
-
+            # Start a thread for the chatroom
             handler = threading.Thread(target=self.handle_client, args=(client,))
             handler.start()
 
         self.broadcast("All players connected! Starting game...")
-
-        for i in range(3):  # 3 rounds of drafting
+        # Start the game and let each client choose their pokemon
+        for i in range(3):  # 3 rounds of choosing
             for client_obj in self.clients:
                 self.choose_pokemon(client_obj)
                 self.broadcast(f"{client_obj.nickname} chose a Pokemon!")
 
-
-                
-
-                
-
-    #         #with self.clients_lock:
-    #             #pass # wip
-    # def start_battle(self):
-    #     # trainer pokemon choosing
-    #     for i in range(3):
-    #         for client in self.clients:
-    #             print("\nAvailable Pokemon: ")
-    #             for i in range(len(all_pokemon)):
-    #                 if not all_pokemon[i].is_chosen:
-    #                     print(f"{i + 1}: {all_pokemon[i].name}")
-    #             choose_pokemon(trainer, all_pokemon)
-
-        # for trainer in listof_trainer:             
-        #     set_initial_active_pokemon(trainer)
 
 
 if __name__ == "__main__":
