@@ -105,10 +105,10 @@ class Server:
                     self.clients.append(client) # Appending the client socket to the list of clients
 
             self.broadcast(f"{nickname} joined the game!") # Notifying other clients that a new client joined the chat
-            client.send(f"Welcome to alexPokemon! Waiting for {3 - len(self.clients)} more player(s)!".encode())
-            client.send("Welcome to the Chatroom! Please refrain from any toxicity.\n".encode())
-            # handler = threading.Thread(target=self.handle_client, args=(client,)) 
-            # handler.start() # Starting the client handler
+            client.send(f"Welcome to alexPokemon!\nWaiting for {3 - len(self.clients)} more player(s),".encode())
+            client.send("\nPlease refrain from any toxicity.\n".encode())
+            handler = threading.Thread(target=self.handle_client, args=(client,)) 
+            handler.start() # Starting the client handler
         
         self.broadcast("All players connected! Starting game...")
 
@@ -155,7 +155,7 @@ if __name__ == "__main__":
     server = Server()
     game = threading.Thread(target=server.start_game)
     game.start()
-    
+    game.join()
 
     
 

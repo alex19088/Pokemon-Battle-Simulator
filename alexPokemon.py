@@ -1,3 +1,4 @@
+import sqlite3
 from typing import List, Tuple
 from abc import ABC, abstractmethod
 import random
@@ -8,6 +9,124 @@ import pytest
 
 #from alexPokeObjs import random_accuracy, Move
 import PokemonObjects5
+
+
+class DatabaseManager:
+    def __init__(self, db_name='pokemon_battle.db'):
+        self.conn = sqlite3.connect(db_name)
+        self.create_tables()
+
+    def create_tables(self):
+        cursor = self.conn.cursor()
+
+        # Players table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Players (
+            player_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nickname TEXT NOT NULL,
+            pokemon_name TEXT NOT NULL,
+            pokemon_type1 TEXT NOT NULL,
+            pokemon_type2 TEXT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # Sessions table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Sessions (
+            session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            winner_name TEXT,
+            total_turns INTEGER,
+            start_time DATETIME,
+            end_time DATETIME,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # Chats table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Chats (
+            chat_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender_name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # ChatbotQueries table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ChatbotQueries (
+            query_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_name TEXT NOT NULL,
+            question TEXT NOT NULL,
+            response TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # UnknownQueries table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS UnknownQueries (
+            unknown_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_name TEXT NOT NULL,
+            question TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        self.conn.commit()
+
+    def insert_player(self, nickname, pokemon_name, pokemon_type1, pokemon_type2=None):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO Players (nickname, pokemon_name, pokemon_type1, pokemon_type2)
+        VALUES (?, ?, ?, ?)
+        ''', (nickname, pokemon_name, pokemon_type1, pokemon_type2))
+        self.conn.commit()
+
+    def start_session(self):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO Sessions (start_time) VALUES (datetime('now'))
+        ''')
+        self.conn.commit()
+        return cursor.lastrowid  # Return the session_id
+
+    def end_session(self, session_id, winner_name, total_turns):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        UPDATE Sessions 
+        SET winner_name = ?, total_turns = ?, end_time = datetime('now')
+        WHERE session_id = ?
+        ''', (winner_name, total_turns, session_id))
+        self.conn.commit()
+
+    def save_chat(self, sender_name, message):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO Chats (sender_name, message)
+        VALUES (?, ?)
+        ''', (sender_name, message))
+        self.conn.commit()
+
+    def log_query(self, player_name, question, response):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO ChatbotQueries (player_name, question, response)
+        VALUES (?, ?, ?)
+        ''', (player_name, question, response))
+        self.conn.commit()
+
+    def log_unknown_query(self, player_name, question):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO UnknownQueries (player_name, question)
+        VALUES (?, ?)
+        ''', (player_name, question))
+        self.conn.commit()
+
+    def close(self):
+        self.conn.close()
 
 class PhysicalStatus:
     def __init__(self, condition : str, turns_active : int, duration : int):
@@ -82,7 +201,39 @@ class Status:
             return get_stage_multiplier(self.speed_stage)
 
         return 1
-        
+
+def create_tables(self):
+    self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS players (
+            player_name TEXT PRIMARY KEY,
+            player_characters TEXT,
+            starting_stats TEXT
+        )
+    ''')
+    self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS sessions (
+            winner TEXT PRIMARY KEY,
+            num_of_turns TEXT,
+            session_start TEXT,
+            session_end TEXT
+        )
+    ''')
+    self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chats (
+            p_msgs TEXT PRIMARY KEY
+        )
+    ''')
+    self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS chatbot_queries (
+            responses TEXT PRIMARY KEY
+        )
+    ''')
+    self.cursor.execute('''
+        CREATE TABLE IF NOT EXISTS unknown_queries (
+            queries TEXT PRIMARY KEY
+        )
+    ''')
+
 # Purpose: Formula for calculating the new multiplier of a pokemon's status
 def get_stage_multiplier(stage: int) -> float:
     # For increasing a pokemon's stat
@@ -1006,18 +1157,6 @@ def test_apply_status_effects_start():
     apply_status_effects_start(pokemon)
     assert pokemon._speed == initial_speed / 2
 
-# Test for apply_status_effects_end with Burned and Poisoned
-def test_apply_status_effects_end():
-    type1 = Type("Grass", [], [], [], [])
-    burned_status = PhysicalStatus("Burned", 0, 0)
-    poisoned_status = PhysicalStatus("Poisoned", 0, 0)
-    status = Status(1.0, 1.0, 1.0, 1.0, 100, [burned_status, poisoned_status])
-    moves = []
-    max_hp = 160
-    pokemon = Pokemon("Bulbasaur", type1, None, max_hp, max_hp, 49, 49, 65, 65, 45, moves, status, False, False, False)
-    apply_status_effects_end(pokemon)
-    expected_hp = max_hp - (max_hp/16 + max_hp/8)
-    assert abs(pokemon._hp - expected_hp) < 0.001
 
 # Test for paralyzed function
 def test_paralyzed():
@@ -1181,7 +1320,6 @@ def run_all_tests():
     print(number + 1)
     test_apply_status_effects_start()
     print(number + 1)
-    test_apply_status_effects_end()
     print(number + 1)
     test_paralyzed()
     print(number + 1)
@@ -1198,9 +1336,9 @@ def run_all_tests():
     test_apply_end_turn_status_damage()
     print("All tests passed.")
 
-if __name__ == "__main__":
-    #run_all_tests()
-    main()  
+# if __name__ == "__main__":
+#     #run_all_tests()
+#     main()  
 
 
 

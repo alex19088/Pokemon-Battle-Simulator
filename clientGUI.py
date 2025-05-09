@@ -52,17 +52,10 @@ class ClientChatroom:
         if user_input:
             message = f"{self.nickname}: {user_input}"
             try:
-                self.client.send(message.encode())
+                self.client.send(message.encode())  # Send the message to the server
             except:
                 print("Error sending message")
-            # Display it locally
-            chat_display.config(state=tk.NORMAL)
-            color = self.assign_color(self.nickname)
-            chat_display.tag_config(self.nickname, foreground=color, font=("Arial", 10, "bold"))
-            chat_display.insert(tk.END, f"You: ", self.nickname)
-            chat_display.insert(tk.END, f"{user_input}\n")
-            chat_display.config(state=tk.DISABLED)
-            chat_display.see(tk.END)
+            # Clear the input field (but do not display the message locally)
             input_field.delete(0, tk.END)
 
     def start(self, nickname):
@@ -73,17 +66,15 @@ class ClientChatroom:
         recv_thread = threading.Thread(target=self.receive, daemon=True)
         recv_thread.start()
 
-# --- GUI Setup ---
+# GUI Setup 
 window = tk.Tk()
 window.geometry("350x520")
 window.title("Chat Room")
 
-# Optional: custom icon
-try:
-    photoICON = tk.PhotoImage(file='chatICON.png')
-    window.iconphoto(False, photoICON)
-except:
-    pass
+
+photoICON = tk.PhotoImage(file='chatICON.png')
+window.iconphoto(False, photoICON)
+
 
 chat_display = scrolledtext.ScrolledText(window, wrap=tk.WORD, width=50, height=20, state=tk.DISABLED)
 chat_display.pack(padx=10, pady=10)
@@ -93,6 +84,10 @@ label.pack()
 
 input_field = tk.Entry(window, width=50)
 input_field.pack(padx=10, pady=10)
+
+photo = tk.PhotoImage(file='pikachu2.png')
+label2 = tk.Label(window, image=photo)
+label2.pack()
 
 chat = ClientChatroom()
 
@@ -106,12 +101,5 @@ def handle_nickname(event):
         chat.start(nickname)
 
 input_field.bind("<Return>", handle_nickname)
-
-# Optional image (ensure file exists)
-try:
-    label2 = tk.Label(window, image=tk.PhotoImage(file='pikachu2.png'))
-    label2.pack()
-except:
-    pass
 
 window.mainloop()

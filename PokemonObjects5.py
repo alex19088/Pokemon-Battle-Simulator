@@ -1,10 +1,10 @@
 from alexPokemon import Type, Pokemon, Move, Status, PhysicalStatus, Trainer
-from alexPokemon import Type
+#from alexPokemon import Type
 import random
 from multipledispatch import dispatch
 from abc import ABC, abstractmethod
 from alexPokemon import handlePokemon
-import alexPokemon
+#import alexPokemon
 
 
 # ----------------------------------------------------------------------
