@@ -2,6 +2,8 @@ import socket
 import threading
 import tkinter as tk
 from tkinter import scrolledtext
+
+from alexPokemon import DatabaseManager
 from clientgamegui import ClientGameGUI
 
 
@@ -10,14 +12,8 @@ class ClientClass:
         self.host = host
         self.port = port
         self.client = None
-        self.nickname_colors = {}
         self.nickname = ""
-
-    def assign_color(self, nickname):
-        colors = ["green", "blue", "red", "purple", "orange"]
-        if nickname not in self.nickname_colors:
-            self.nickname_colors[nickname] = colors[len(self.nickname_colors) % len(colors)]
-        return self.nickname_colors[nickname]
+        self.db = DatabaseManager()  # database
 
     def receive(self):
         while True:
@@ -56,6 +52,7 @@ class ClientClass:
             message = f"{self.nickname}: {user_input}"
             try:
                 self.client.send(message.encode())
+                self.db.save_chat(self.nickname, user_input) # save to database
             except:
                 print("Error sending message")
             inputChat.delete(0, tk.END)
