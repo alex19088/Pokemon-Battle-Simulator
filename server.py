@@ -84,24 +84,30 @@ class Server:
                     self.clients.append(client) # Appending the client socket to the list of clients
 
             self.broadcast(f"{nickname} joined the game!") # Notifying other clients that a new client joined the chat
-            client.send(f"Welcome to alexPokemon! Waiting for {3 - len(self.clients)} more player(s)!".encode())
-            client.send("Welcome to the Chatroom! Please refrain from any toxicity.\n".encode())
+            client.send(f"Welcome to alexPokemon!\nWaiting for {3 - len(self.clients)} more player(s),".encode())
+            client.send("\nPlease refrain from any toxicity.\n".encode())
             handler = threading.Thread(target=self.handle_client, args=(client,)) 
             handler.start() # Starting the client handler
         
         self.broadcast("All players connected! Starting game...")
 
-        #for i in range(3):
-           # for client in self.clients:
-
-              #  client.send("CHOOSEPOKEMON".encode())
+    #     for i in range(3):
+    #        for client in self.clients:
+    #             # Sending the list of all available pokemon to each client
+    #             client.send("Available Pokemon: ".encode())
+    #             for i in range(len(all_pokemon)):
+    #                 if not all_pokemon[i].is_chosen:
+    #                     client.send(f"{i + 1}: {all_pokemon[i].name}".encode())
+    #             # Sending a message to each client to choose their pokemon
+    #             client.send("Choose your Pokemon!".encode())
+            
 
             
 
                 
 
-            #with self.clients_lock:
-                #pass # wip
+    #         #with self.clients_lock:
+    #             #pass # wip
     # def start_battle(self):
     #     # trainer pokemon choosing
     #     for i in range(3):
@@ -128,7 +134,7 @@ if __name__ == "__main__":
     server = Server()
     game = threading.Thread(target=server.start_game)
     game.start()
-    
+    game.join()
 
     
 

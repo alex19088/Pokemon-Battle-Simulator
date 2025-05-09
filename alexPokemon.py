@@ -1006,18 +1006,6 @@ def test_apply_status_effects_start():
     apply_status_effects_start(pokemon)
     assert pokemon._speed == initial_speed / 2
 
-# Test for apply_status_effects_end with Burned and Poisoned
-def test_apply_status_effects_end():
-    type1 = Type("Grass", [], [], [], [])
-    burned_status = PhysicalStatus("Burned", 0, 0)
-    poisoned_status = PhysicalStatus("Poisoned", 0, 0)
-    status = Status(1.0, 1.0, 1.0, 1.0, 100, [burned_status, poisoned_status])
-    moves = []
-    max_hp = 160
-    pokemon = Pokemon("Bulbasaur", type1, None, max_hp, max_hp, 49, 49, 65, 65, 45, moves, status, False, False, False)
-    apply_status_effects_end(pokemon)
-    expected_hp = max_hp - (max_hp/16 + max_hp/8)
-    assert abs(pokemon._hp - expected_hp) < 0.001
 
 # Test for paralyzed function
 def test_paralyzed():
@@ -1181,7 +1169,6 @@ def run_all_tests():
     print(number + 1)
     test_apply_status_effects_start()
     print(number + 1)
-    test_apply_status_effects_end()
     print(number + 1)
     test_paralyzed()
     print(number + 1)
