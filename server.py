@@ -53,6 +53,27 @@ class Server:
                 self.broadcast(f"[{nickname}] disconnected from the chat!".encode())
                 self.nicknames.remove(nickname)
                 break
+
+    # Purpose : To constantly receieve client actions
+    def handle_client_game(self, client):
+        while not self.done:
+            
+            action = client.recv(1024).decode()
+            if action == "choose":
+                # Choose a pokemon
+                client.send("Choose your Pokemon!".encode())
+                # Receive the chosen pokemon from the client
+                chosen_pokemon = client.recv(1024).decode()
+                # Send the chosen pokemon to all clients
+                self.broadcast(f"{self.nicknames[self.clients.index(client)]} chose {chosen_pokemon}".encode())
+            elif action == "attack":
+                # Attack with a pokemon
+                client.send("Choose your attack!".encode())
+                # Receive the attack from the client
+                attack = client.recv(1024).decode()
+                # Send the attack to all clients
+                self.broadcast(f"{self.nicknames[self.clients.index(client)]} used {attack}".encode())
+                
         
 
     # To start the game server for clients
@@ -91,15 +112,15 @@ class Server:
         
         self.broadcast("All players connected! Starting game...")
 
-    #     for i in range(3):
-    #        for client in self.clients:
-    #             # Sending the list of all available pokemon to each client
-    #             client.send("Available Pokemon: ".encode())
-    #             for i in range(len(all_pokemon)):
-    #                 if not all_pokemon[i].is_chosen:
-    #                     client.send(f"{i + 1}: {all_pokemon[i].name}".encode())
-    #             # Sending a message to each client to choose their pokemon
-    #             client.send("Choose your Pokemon!".encode())
+        for i in range(3):
+           for client in self.clients:
+                # Sending the list of all available pokemon to each client
+                client.send("Available Pokemon: ".encode())
+                for i in range(len(all_pokemon)):
+                    if not all_pokemon[i].is_chosen:
+                        client.send(f"{i + 1}: {all_pokemon[i].name}".encode())
+                # Sending a message to each client to choose their pokemon
+                client.send("Choose your Pokemon!".encode())
             
 
             
