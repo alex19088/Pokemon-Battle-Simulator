@@ -12,8 +12,7 @@ class ClientWrapper:
         self.nickname = nickname # The nickname of the client
         self.trainer_pokemon = [] # The list of pokemons chosen by the trainer (later on)
         self.active_pokemon = None # The active pokemon of the trainer (later on)
-        self.db = alexPokemon.DatabaseManager()  # for database
-        self.current_session = None  # also for database
+        
 
 class Server:
     def __init__(self, host='localhost', port=65000, clients=[], nicknames=[], hours=0, minutes=0, seconds=0, done=False):
@@ -121,7 +120,6 @@ class Server:
         server.bind((self.host, self.port))
         server.listen(3)
 
-        self.current_session = self.db.start_session() # for database
 
         timer = threading.Thread(target=self.time_update, daemon=True)
         timer.start()
