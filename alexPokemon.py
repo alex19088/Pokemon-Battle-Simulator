@@ -6,9 +6,11 @@ from multipledispatch import dispatch
 import inspect
 import time
 import pytest
+from datetime import datetime
 
 #from alexPokeObjs import random_accuracy, Move
 import PokemonObjects5
+import server
 
 
 class DatabaseManager:
@@ -21,108 +23,59 @@ class DatabaseManager:
 
         # Players table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Players (
-            player_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS players (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             nickname TEXT NOT NULL,
             pokemon_name TEXT NOT NULL,
-            pokemon_type1 TEXT NOT NULL,
-            pokemon_type2 TEXT,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         ''')
 
-        # Sessions table
+        # Battles table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Sessions (
-            session_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            winner_name TEXT,
-            total_turns INTEGER,
-            start_time DATETIME,
-            end_time DATETIME,
+        CREATE TABLE IF NOT EXISTS battles (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            winner TEXT NOT NULL,
+            duration_seconds INTEGER,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         ''')
 
-        # Chats table
+        # Pokemon choices table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS Chats (
-            chat_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            sender_name TEXT NOT NULL,
-            message TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-        ''')
-
-        # ChatbotQueries table
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS ChatbotQueries (
-            query_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS pokemon_choices (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
             player_name TEXT NOT NULL,
-            question TEXT NOT NULL,
-            response TEXT NOT NULL,
-            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-        ''')
-
-        # UnknownQueries table
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS UnknownQueries (
-            unknown_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            player_name TEXT NOT NULL,
-            question TEXT NOT NULL,
+            pokemon_name TEXT NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         ''')
 
         self.conn.commit()
 
-    def insert_player(self, nickname, pokemon_name, pokemon_type1, pokemon_type2=None):
+    def log_player(self, nickname: str, pokemon_name: str):
         cursor = self.conn.cursor()
         cursor.execute('''
-        INSERT INTO Players (nickname, pokemon_name, pokemon_type1, pokemon_type2)
-        VALUES (?, ?, ?, ?)
-        ''', (nickname, pokemon_name, pokemon_type1, pokemon_type2))
-        self.conn.commit()
-
-    def start_session(self):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-        INSERT INTO Sessions (start_time) VALUES (datetime('now'))
-        ''')
-        self.conn.commit()
-        return cursor.lastrowid  # Return the session_id
-
-    def end_session(self, session_id, winner_name, total_turns):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-        UPDATE Sessions 
-        SET winner_name = ?, total_turns = ?, end_time = datetime('now')
-        WHERE session_id = ?
-        ''', (winner_name, total_turns, session_id))
-        self.conn.commit()
-
-    def save_chat(self, sender_name, message):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-        INSERT INTO Chats (sender_name, message)
+        INSERT INTO players (nickname, pokemon_name)
         VALUES (?, ?)
-        ''', (sender_name, message))
+        ''', (nickname, pokemon_name))
         self.conn.commit()
 
-    def log_query(self, player_name, question, response):
+    def log_battle(self, winner: str, start_time: datetime):
+        duration = (datetime.now() - start_time).total_seconds()
         cursor = self.conn.cursor()
         cursor.execute('''
-        INSERT INTO ChatbotQueries (player_name, question, response)
-        VALUES (?, ?, ?)
-        ''', (player_name, question, response))
-        self.conn.commit()
-
-    def log_unknown_query(self, player_name, question):
-        cursor = self.conn.cursor()
-        cursor.execute('''
-        INSERT INTO UnknownQueries (player_name, question)
+        INSERT INTO battles (winner, duration_seconds)
         VALUES (?, ?)
-        ''', (player_name, question))
+        ''', (winner, int(duration)))
+        self.conn.commit()
+
+    def log_pokemon_choice(self, player_name: str, pokemon_name: str):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO pokemon_choices (player_name, pokemon_name)
+        VALUES (?, ?)
+        ''', (player_name, pokemon_name))
         self.conn.commit()
 
     def close(self):
@@ -201,38 +154,6 @@ class Status:
             return get_stage_multiplier(self.speed_stage)
 
         return 1
-
-def create_tables(self):
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS players (
-            player_name TEXT PRIMARY KEY,
-            player_characters TEXT,
-            starting_stats TEXT
-        )
-    ''')
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS sessions (
-            winner TEXT PRIMARY KEY,
-            num_of_turns TEXT,
-            session_start TEXT,
-            session_end TEXT
-        )
-    ''')
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS chats (
-            p_msgs TEXT PRIMARY KEY
-        )
-    ''')
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS chatbot_queries (
-            responses TEXT PRIMARY KEY
-        )
-    ''')
-    self.cursor.execute('''
-        CREATE TABLE IF NOT EXISTS unknown_queries (
-            queries TEXT PRIMARY KEY
-        )
-    ''')
 
 # Purpose: Formula for calculating the new multiplier of a pokemon's status
 def get_stage_multiplier(stage: int) -> float:
@@ -962,6 +883,10 @@ def battle_loop(trainers: list) -> None:
 
         # Clears the move queue
         list_of_queued_moves.clear()
+
+    winner = determine_winner(trainers)
+    if winner and server:
+        server.log_winner(winner)
 
     print(f"\nCongrats to {determine_winner(trainers)} for winning!")  # End game
     for trainer in trainers:

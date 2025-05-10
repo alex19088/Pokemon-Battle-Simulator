@@ -25,6 +25,8 @@ class Server:
         self.done = done # To stop the server (for while loops)
         self.trainers = []
         self.clients_lock = threading.Lock()
+        self.db = alexPokemon.DatabaseManager()
+        self.battle_start_time = None
 
 
     
@@ -46,6 +48,7 @@ class Server:
         for client_obj in self.clients:
             try:
                 client_obj.client.send(f"[{time_display}] {message}".encode())
+                self.db.log_chat(client_obj.nickname, message)
             except:
                 pass  
 
@@ -108,6 +111,7 @@ class Server:
             if confirm in ["1", "yes"]:
                 chosen_pokemon.is_chosen = True
                 client_obj.trainer_pokemon.append(chosen_pokemon)
+                self.db.log_pokemon_choice(client_obj.nickname, chosen_pokemon.name)
                 client.sendall(f"{chosen_pokemon.name} added to your team!\n".encode())
                 return
             elif confirm in ["2", "no"]:
@@ -122,6 +126,8 @@ class Server:
         server.bind((self.host, self.port))
         server.listen(3)
 
+        # Start a new session in the database
+        #self.battle_start_time = self.db.start_session()
 
         timer = threading.Thread(target=self.time_update, daemon=True)
         timer.start()
@@ -150,8 +156,11 @@ class Server:
         for i in range(3):  # 3 rounds of choosing
             for client_obj in self.clients:
                 self.choose_pokemon(client_obj)
-                self.broadcast(f"{client_obj.nickname} chose a Pokemon!") 
+                self.broadcast(f"{client_obj.nickname} chose a Pokemon!")
 
+    def log_winner(self, winner_name):
+        if self.battle_start_time:
+            self.db.log_battle(winner_name, self.battle_start_time)
 
 if __name__ == "__main__":
     all_pokemon: list[alexPokemon.Pokemon] = [PokemonObjects5.charizard, PokemonObjects5.ampharos, PokemonObjects5.swampert,
@@ -166,6 +175,8 @@ if __name__ == "__main__":
     game = threading.Thread(target=server.start_game)
     game.start()
     game.join()
+
+    server.db.close()
 
     
 
