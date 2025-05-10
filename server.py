@@ -48,7 +48,7 @@ class Server:
         for client_obj in self.clients:
             try:
                 client_obj.client.send(f"[{time_display}] {message}".encode())
-                self.db.log_chat(client_obj.nickname, message)
+                self.db.save_chat(client_obj.nickname, message)
             except:
                 pass  
 
@@ -158,9 +158,9 @@ class Server:
                 self.choose_pokemon(client_obj)
                 self.broadcast(f"{client_obj.nickname} chose a Pokemon!")
 
-    def log_winner(self, winner_name):
+    def log_winner(self, winner_name, total_turns):
         if self.battle_start_time:
-            self.db.log_battle(winner_name, self.battle_start_time)
+            self.db.end_session(self.battle_start_time, winner_name, total_turns)
 
 if __name__ == "__main__":
     all_pokemon: list[alexPokemon.Pokemon] = [PokemonObjects5.charizard, PokemonObjects5.ampharos, PokemonObjects5.swampert,

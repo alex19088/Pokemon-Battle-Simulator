@@ -23,59 +23,108 @@ class DatabaseManager:
 
         # Players table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS players (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS Players (
+            player_id INTEGER PRIMARY KEY AUTOINCREMENT,
             nickname TEXT NOT NULL,
             pokemon_name TEXT NOT NULL,
+            pokemon_type1 TEXT NOT NULL,
+            pokemon_type2 TEXT,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         ''')
 
-        # Battles table
+        # Sessions table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS battles (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            winner TEXT NOT NULL,
-            duration_seconds INTEGER,
+        CREATE TABLE IF NOT EXISTS Sessions (
+            session_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            winner_name TEXT,
+            total_turns INTEGER,
+            start_time DATETIME,
+            end_time DATETIME,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         ''')
 
-        # Pokemon choices table
+        # Chats table
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS pokemon_choices (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
+        CREATE TABLE IF NOT EXISTS Chats (
+            chat_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender_name TEXT NOT NULL,
+            message TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # ChatbotQueries table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ChatbotQueries (
+            query_id INTEGER PRIMARY KEY AUTOINCREMENT,
             player_name TEXT NOT NULL,
-            pokemon_name TEXT NOT NULL,
+            question TEXT NOT NULL,
+            response TEXT NOT NULL,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+        ''')
+
+        # UnknownQueries table
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS UnknownQueries (
+            unknown_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            player_name TEXT NOT NULL,
+            question TEXT NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
         )
         ''')
 
         self.conn.commit()
 
-    def log_player(self, nickname: str, pokemon_name: str):
+    def insert_player(self, nickname, pokemon_name, pokemon_type1, pokemon_type2=None):
         cursor = self.conn.cursor()
         cursor.execute('''
-        INSERT INTO players (nickname, pokemon_name)
-        VALUES (?, ?)
-        ''', (nickname, pokemon_name))
+        INSERT INTO Players (nickname, pokemon_name, pokemon_type1, pokemon_type2)
+        VALUES (?, ?, ?, ?)
+        ''', (nickname, pokemon_name, pokemon_type1, pokemon_type2))
         self.conn.commit()
 
-    def log_battle(self, winner: str, start_time: datetime):
-        duration = (datetime.now() - start_time).total_seconds()
+    def start_session(self):
         cursor = self.conn.cursor()
         cursor.execute('''
-        INSERT INTO battles (winner, duration_seconds)
-        VALUES (?, ?)
-        ''', (winner, int(duration)))
+        INSERT INTO Sessions (start_time) VALUES (datetime('now'))
+        ''')
+        self.conn.commit()
+        return cursor.lastrowid
+
+    def end_session(self, session_id, winner_name, total_turns):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        UPDATE Sessions 
+        SET winner_name = ?, total_turns = ?, end_time = datetime('now')
+        WHERE session_id = ?
+        ''', (winner_name, total_turns, session_id))
         self.conn.commit()
 
-    def log_pokemon_choice(self, player_name: str, pokemon_name: str):
+    def save_chat(self, sender_name, message):
         cursor = self.conn.cursor()
         cursor.execute('''
-        INSERT INTO pokemon_choices (player_name, pokemon_name)
+        INSERT INTO Chats (sender_name, message)
         VALUES (?, ?)
-        ''', (player_name, pokemon_name))
+        ''', (sender_name, message))
+        self.conn.commit()
+
+    def log_query(self, player_name, question, response):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO ChatbotQueries (player_name, question, response)
+        VALUES (?, ?, ?)
+        ''', (player_name, question, response))
+        self.conn.commit()
+
+    def log_unknown_query(self, player_name, question):
+        cursor = self.conn.cursor()
+        cursor.execute('''
+        INSERT INTO UnknownQueries (player_name, question)
+        VALUES (?, ?)
+        ''', (player_name, question))
         self.conn.commit()
 
     def close(self):
