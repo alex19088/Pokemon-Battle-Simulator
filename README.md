@@ -1,4 +1,4 @@
-# Pokémon Battle Simulator 🐾
+# Pokémon Battle Simulator
 
 A **3-player Pokémon battle simulator** built in Python with AI support. Players connect as clients to a central server, draft teams, and battle in a turn-based system featuring a GUI with static battle scenes and a scrolling text log.
 
